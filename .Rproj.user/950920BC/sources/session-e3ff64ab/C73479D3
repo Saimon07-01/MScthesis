@@ -1,11 +1,11 @@
 {
     "id": "C73479D3",
-    "path": null,
-    "project_path": null,
+    "path": "~/MScthesis/code.R",
+    "project_path": "code.R",
     "type": "r_source",
     "hash": "0",
     "contents": "",
-    "dirty": true,
+    "dirty": false,
     "created": 1758529623602.0,
     "source_on_save": false,
     "relative_order": 1,
@@ -17,11 +17,11 @@
         "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 7882821570785917474,
-    "encoding": "",
+    "lastKnownWriteTime": 1758531370,
+    "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1758529656397,
+    "last_content_update": 1758531370986,
     "read_only": false,
     "read_only_alternatives": []
 }
