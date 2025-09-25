@@ -50,11 +50,11 @@ data_sub <- df_merged %>% select(SA0010, RA0010, HW0010, DH0001,DHAGEH1,DHGENDER
                                 HD1310d,HD1310e,HD1310f,HD1310g,HD1320a,HD1320b,
                                 HD1320c,HD1320d,HD1320e,HD1320f,HD1320g )
 
-# Merge relevant variables with replication weights and remove irrelevant column 
+# Merge relevant variables with replication weights and remove irrelevant columns 
 data <- data_sub %>% left_join(repl_weights, by = "SA0010")
 data_final <- data %>% select(-sa0100,-((ncol(data)-2):ncol(data)) )
 
-
+ss
 
 
 
