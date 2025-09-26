@@ -4,13 +4,14 @@ if (!require("survey", quietly = TRUE)) {install.packages("survey")}
 if (!require("Hmisc", quietly = TRUE)) {install.packages("Hmisc")}
 if (!require("purrr", quietly = TRUE)) {install.packages("purr")}
 if (!require("tidyverse", quietly = TRUE)) {install.packages("tidyverse")}
+if (!require("scales", quietly = TRUE)) {install.packages("scales")}
 
 library(dplyr)
 library(survey)
 library(Hmisc)
 library(purrr)
 library(tidyverse)
-
+library(scales)
 
 # Set directory
 setwd("C:\\Users\\ecche\\Desktop\\Tesi\\HFCS\\HFCS2014\\dati_wave2_csv")
@@ -164,17 +165,17 @@ ptf_long <- ptf_comp %>%
     values_to = "Share"
   )
 
-# Grafico stacked con colori più soft
+# Stacked chart 
 ggplot(ptf_long, aes(x = quartile, y = Share, fill = Asset)) +
   geom_col() +
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   scale_fill_manual(values = c(
-    "HMR" = "#ABCDEF",    
+    "HMR" = "#4169E1",    
     "ORE" = "#FF9933",      
-    "ORA" = "#b2df8a",       
-    "BUS" = "#33a02c",
+    "ORA" = "#33a02c",      
+    "BUS" = "#1E90FF",
     "ALLSTOCK" = "#FF0000",
-    "OFA" = "#FDE910"     
+    "OFA" = "#FFBF00"     
     
   ),labels = c(
     "HMR" = "HMR",
@@ -190,6 +191,7 @@ ggplot(ptf_long, aes(x = quartile, y = Share, fill = Asset)) +
   ) +
   theme_minimal() +
   theme(legend.title = element_blank())
+
 
 
 # ------------------------------------------------------------------------------
@@ -238,19 +240,18 @@ ptf_long_fin <- ptf_comp_fin %>%
     values_to = "Share"
   )
 
-# Grafico stacked con colori più soft
+# Stacked chart 
 ggplot(ptf_long_fin, aes(x = quartile, y = Share, fill = Asset)) +
   geom_col() +
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   scale_fill_manual(values = c(
-    "MF" = "#ABCDEF",    
+    "MF" = "#4169E1",    
     "VOL" = "#FF9933",      
-    "BONDS" = "#b2df8a",       
-    "DEP" = "#33a02c",
+    "BONDS" = "#33a02c",      
+    "DEP" =  "#FFBF00",
     "ALLSTOCK" = "#FF0000",
-    "OFA" = "#FDE910"     
-    
-  ),labels = c(
+    "OFA" = "#1E90FF"),
+    labels = c(
     "MF" = "MF",
     "VOL" = "VOL",
     "BONDS" = "BONDS",
@@ -264,4 +265,23 @@ ggplot(ptf_long_fin, aes(x = quartile, y = Share, fill = Asset)) +
   ) +
   theme_minimal() +
   theme(legend.title = element_blank())
+
+
+
+
+
+# ------------------------------------------------------------------------------
+# STOCK MARKET PARTICIPATION  
+# ------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
 
