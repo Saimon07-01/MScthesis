@@ -103,6 +103,11 @@ cutoff <- nw_quartile[[1]][,1]
 data_final$quartile <- cut(data_final$DN3001, breaks=c(-Inf,cutoff, Inf),labels=1:4,include.lowest=TRUE,right=FALSE)
 
 
+# Compute top 5% and create dummy 
+nw_95 <- svyquantile(~DN3001, design, quantiles = 0.95)
+cutoff95 <- nw_95[[1]][[1]]
+data_final$top5 <- ifelse(data_final$DN3001 >= cutoff95, 1, 0)
+
 
 # ------------------------------------------------------------------------------
 # PTF COMPOSITION total and divided by quartile of net-wealth 
@@ -148,13 +153,17 @@ calc_shares <- function(design_obj, label) {
 }
 
 ### General
-gen_comp <- calc_shares(design, "General")
+gen_comp <- calc_shares(design, "Overall")
 
 ### By quartile
-comp_byquart <- map_dfr(1:4, ~calc_shares(subset(design, quartile == .x), .x))
+comp_byquart <- map_dfr(1:4, ~calc_shares(subset(design, quartile == .x), paste0(.x, "° quartile")))
+
+### TOP 5%
+comp_TOP5 <- calc_shares(subset(design, top5 == 1), "Top 5%")
+
 
 ### Union
-ptf_comp <- bind_rows(gen_comp, comp_byquart)
+ptf_comp <- bind_rows(gen_comp, comp_byquart,comp_TOP5)
 
 
 # Convert dataset in long format 
@@ -166,16 +175,16 @@ ptf_long <- ptf_comp %>%
   )
 
 # Stacked chart 
-ggplot(ptf_long, aes(x = quartile, y = Share, fill = Asset)) +
-  geom_col() +
+ggplot(ptf_long, aes(x = factor(quartile, levels = c("Overall", "1° quartile", "2° quartile", "3° quartile", "4° quartile","Top 5%")), y = Share, fill = Asset)) +
+  geom_col(width=0.7) +
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   scale_fill_manual(values = c(
-    "HMR" = "#4169E1",    
-    "ORE" = "#FF9933",      
-    "ORA" = "#33a02c",      
-    "BUS" = "#1E90FF",
-    "ALLSTOCK" = "#FF0000",
-    "OFA" = "#FFBF00"     
+    "HMR" = "#FFFDD0",    
+    "ORE" = "#FFE4C4",      
+    "ORA" = "#D8BFD8",      
+    "BUS" = "#D0F0C0",
+    "ALLSTOCK" = "#FFB3BA",
+    "OFA" = "#E6E6FA"     
     
   ),labels = c(
     "HMR" = "HMR",
@@ -186,11 +195,13 @@ ggplot(ptf_long, aes(x = quartile, y = Share, fill = Asset)) +
     "ALLSTOCK" = "ALL STOCK"
   ),  ) +
   labs(# title = "Composizione del portafoglio per quartile di ricchezza netta",
-    x = "Quartile di ricchezza",
+    x = "",
     y = "Quota (%)"
   ) +
   theme_minimal() +
-  theme(legend.title = element_blank())
+  theme(legend.title = element_blank(),legend.position = "bottom",legend.text = element_text(size = 7),
+        legend.key.size = unit(0.35, "cm"))+
+  guides(fill = guide_legend(nrow = 1))
 
 
 
@@ -223,13 +234,16 @@ calc_shares_fin <- function(design_obj, label) {
 }
 
 ### General
-gen_comp_fin <- calc_shares_fin(design, "General")
+gen_comp_fin <- calc_shares_fin(design, "Overall")
 
 ### By quartile
-comp_fin_byquart <- map_dfr(1:4, ~calc_shares_fin(subset(design, quartile == .x), .x))
+comp_fin_byquart <- map_dfr(1:4, ~calc_shares_fin(subset(design, quartile == .x), paste0(.x, "° quartile")))
+
+### TOP 5%
+comp_fin_TOP5 <- calc_shares_fin(subset(design, top5 == 1), "Top 5%")
 
 ### Union
-ptf_comp_fin <- bind_rows(gen_comp_fin, comp_fin_byquart)
+ptf_comp_fin <- bind_rows(gen_comp_fin, comp_fin_byquart,comp_fin_TOP5)
 
 
 # Convert dataset in long format 
@@ -241,44 +255,39 @@ ptf_long_fin <- ptf_comp_fin %>%
   )
 
 # Stacked chart 
-ggplot(ptf_long_fin, aes(x = quartile, y = Share, fill = Asset)) +
-  geom_col() +
+ggplot(ptf_long_fin, aes(x = factor(quartile, levels = c("Overall", "1° quartile", "2° quartile", "3° quartile", "4° quartile","Top 5%")), y = Share, fill = Asset)) +
+  geom_col(width = 0.7) +
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   scale_fill_manual(values = c(
-    "MF" = "#4169E1",    
-    "VOL" = "#FF9933",      
-    "BONDS" = "#33a02c",      
-    "DEP" =  "#FFBF00",
-    "ALLSTOCK" = "#FF0000",
-    "OFA" = "#1E90FF"),
+    "MF" = "#FFFDD0",    
+    "VOL" = "#FFE4C4",      
+    "BONDS" = "#D8BFD8",      
+    "DEP" =  "#D0F0C0",
+    "ALLSTOCK" = "#FFB3BA",
+    "OFA" = "#E6E6FA"),
     labels = c(
     "MF" = "MF",
     "VOL" = "VOL",
-    "BONDS" = "BONDS",
+    "BONDS" = "BOND",
     "DEP" = "DEP",
     "OFA" = "OFA",
     "ALLSTOCK" = "ALL STOCK"
   ),  ) +
   labs(# title = "Composizione del portafoglio per quartile di ricchezza netta",
-    x = "Quartile di ricchezza",
+    x = "",
     y = "Quota (%)"
   ) +
   theme_minimal() +
-  theme(legend.title = element_blank())
+  theme(legend.title = element_blank(),
+        legend.position = "bottom",legend.text = element_text(size = 7),
+        legend.key.size = unit(0.35, "cm"))+
+  guides(fill = guide_legend(nrow = 1))
 
 
 
-
-
-# ------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------
 # STOCK MARKET PARTICIPATION  
-# ------------------------------------------------------------------------------
-
-
-
-
-
-
+# ---------------------------------------------------------------------------------
 
 
 
