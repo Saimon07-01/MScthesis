@@ -292,5 +292,3 @@ ggplot(ptf_long_fin, aes(x = factor(quartile, levels = c("Overall", "1° quartil
 
 
 
-
-
